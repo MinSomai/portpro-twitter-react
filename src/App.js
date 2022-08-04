@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { Link /*  useRoutes */ } from "react-router-dom";
+import "./App.css";
+
+// import routes from "./routes";
+import Routes from "./Routes";
 
 function App() {
+  // const routeResult = useRoutes(routes);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container mx-auto">
+        <header>
+          <strong>PortPro Twitter OAuth</strong>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        <main>
+          <Routes />
+        </main>
+      </div>
     </div>
   );
 }
