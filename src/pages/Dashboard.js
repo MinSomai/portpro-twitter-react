@@ -1,29 +1,20 @@
-import { useNavigate } from "react-router";
+import useGlobalState from "../store/store";
 
-export default function Product() {
-  const navigate = useNavigate();
-
-  function handleGoToHome() {
-    navigate("/");
-  }
-
-  function handleGoBack() {
-    navigate(-1);
-  }
-
-  function handleGoForward() {
-    navigate(1);
-  }
-
+export default function Dashboard() {
+  const state = useGlobalState();
+  const getState = state.getUser;
+  const isLoggedIn = state.getLoggedIn;
   return (
     <div>
-      <h2>Dashboard</h2>
-      <p>Only logged in user can access</p>
-      <div className="actions">
-        <button onClick={handleGoBack}>GoBack</button>
-        <button onClick={handleGoForward}>Go Forward</button>
-        <button onClick={handleGoToHome}>Go Home</button>
-      </div>
+      {!isLoggedIn && <p>Please log in to view content of this page.</p>}
+      {isLoggedIn && (
+        <div>
+          <p>Only logged in user can access this page.</p>
+          <p className="mt-4">
+            <strong>Successfully logged in</strong>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

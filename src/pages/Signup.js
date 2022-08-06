@@ -1,41 +1,20 @@
 import { useForm } from "react-hook-form";
-import { loginUser } from "../services/authService";
-import useGlobalState from "../store/store";
-import { useNavigate } from "react-router";
 
-export default function Login() {
-  const state = useGlobalState();
-  const navigate = useNavigate();
+export default function Signup() {
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    reset,
   } = useForm();
-
-  const onSubmit = async userData => {
-    try {
-      const { data } = await loginUser({
-        email: userData["Email"],
-        password: userData["Password"],
-      });
-      if (data) {
-        state.updateUser(data.user);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("isLoggedIn", true);
-        state.updateLoggedIn(true);
-        navigate("/dashboard");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const onSubmit = data => console.log(data);
+  console.log(errors);
 
   const handleTwitterLogin = event => {
     event.preventDefault();
     window.open(`${process.env.REACT_APP_TWITTER_AUTH}`, "_self");
   };
+
   return (
     <section className="h-screen">
       <div className="container px-6 py-12 shadow-lg">
@@ -49,12 +28,25 @@ export default function Login() {
           </div>
           <div className="md:w-8/12 lg:w-5/12 lg:ml-20 mt-5 mt-lg-0">
             <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Full name */}
+              <div className="mb-6">
+                <input
+                  type="text"
+                  className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  placeholder="Full Name"
+                  {...register("Full name", { required: true, maxLength: 80 })}
+                />
+                <small className="text-red-600">
+                  {errors[`Full name`]?.type === "required" &&
+                    "Full name is required"}
+                </small>
+              </div>
               {/* Email input */}
               <div className="mb-6">
                 <input
                   type="text"
                   className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  placeholder="Email "
+                  placeholder="Email address"
                   {...register("Email", {
                     required: true,
                     pattern: /^\S+@\S+$/i,
@@ -72,13 +64,33 @@ export default function Login() {
                   type="password"
                   className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                   placeholder="Password"
-                  {...register("Password", { required: true, min: 8 })}
+                  {...register("Password", { required: true })}
                 />
                 <small className="text-red-600">
                   {errors[`Password`]?.type === "required" &&
-                    "Password is required. "}
-                  {errors[`Password`]?.type === "min" &&
-                    "Password min length is 8"}
+                    "Password is required"}
+                </small>
+              </div>
+              {/* Confirm Password input */}
+              <div className="mb-6">
+                <input
+                  type="password"
+                  className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  placeholder="Confirm Password"
+                  {...register("Confirm password", {
+                    required: true,
+                    validate: val => {
+                      if (watch("Password") !== val) {
+                        return "Confirm password must match password.";
+                      }
+                    },
+                  })}
+                />
+                <small className="text-red-600">
+                  {errors[`Confirm password`]?.type === "required" &&
+                    "Confirm password is required"}
+                  {errors[`Confirm password`]?.type === "validate" &&
+                    "Confirm password do not match."}
                 </small>
               </div>
               {/* Submit button */}
@@ -88,11 +100,33 @@ export default function Login() {
                 data-mdb-ripple="true"
                 data-mdb-ripple-color="light"
               >
-                Sign in
+                Sign up
               </button>
               <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                 <p className="text-center font-semibold mx-4 mb-0">OR</p>
               </div>
+              <a
+                className="px-7 py-3 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full justify-center items-center mb-3 hidden"
+                style={{ backgroundColor: "#3b5998" }}
+                href="#!"
+                role="button"
+                data-mdb-ripple="true"
+                data-mdb-ripple-color="light"
+              >
+                {/* Facebook */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 320 512"
+                  className="w-3.5 h-3.5 mr-2"
+                >
+                  {/*! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */}
+                  <path
+                    fill="currentColor"
+                    d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"
+                  />
+                </svg>
+                Continue with Facebook
+              </a>
               <button
                 className="px-7 py-3 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full flex justify-center items-center"
                 style={{ backgroundColor: "#55acee" }}
