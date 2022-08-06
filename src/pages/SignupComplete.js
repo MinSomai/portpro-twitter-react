@@ -31,12 +31,15 @@ export default function Signup() {
   }, [isLoggedIn]);
 
   const onSubmit = async userData => {
-    await updateUser({
+    const { data } = await updateUser({
       id: getState?.user?.id,
       name: userData["Full name"],
       email: userData["Email"],
       password: userData["Password"],
     });
+    if (data) {
+      state.updateUser(data);
+    }
     navigate("/dashboard");
   };
 
